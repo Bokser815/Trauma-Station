@@ -59,6 +59,11 @@
     - BorgModuleRobocopTools
     - BorgModuleRobocopHands
     - BorgModuleRobocopPrying
+  - type: Puller
+    needsHands: true
+    startingGrabStage: Hard
+    throwingDistance: 8
+    grabThrownSpeed: 12
   - type: ContainerContainer
     containers:
       borg_brain: !type:ContainerSlot { }

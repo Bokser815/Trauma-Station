@@ -164,6 +164,7 @@
   icons:
   - JobIconStationAi
   - JobIconBorg
+  - JobIconRobocop
 
 - type: jobIconGroup
   id: BlankIconGroup

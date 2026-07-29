@@ -35,12 +35,6 @@ public sealed partial class RobocopChassisComponent : Component
     public int ExtraModuleCount;
 
     /// <summary>
-    /// Whether ghosting and suicide are blocked.
-    /// </summary>
-    [DataField]
-    public bool TrapOccupant = true;
-
-    /// <summary>
     /// Minimum time between warnings when movement is blocked by missing lungs.
     /// </summary>
     [DataField]

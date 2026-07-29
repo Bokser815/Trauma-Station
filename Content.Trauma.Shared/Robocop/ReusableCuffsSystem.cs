@@ -130,7 +130,10 @@ public sealed class ReusableCuffsSystem : EntitySystem
                 ("otherName", Identity.Name(user, EntityManager, target))),
             target,
             target);
-        _adminLog.Add(LogType.Action, LogImpact.High, $"{ToPrettyString(user):player} has cuffed {ToPrettyString(target):player}");
+        _adminLog.Add(
+            LogType.Action,
+            LogImpact.High,
+            $"{ToPrettyString(user):player} has cuffed {ToPrettyString(target):player}");
     }
 
     private bool CanCuff(EntityUid user, EntityUid target)

@@ -132,7 +132,6 @@
   roles:
   # <Trauma>
   - Brigmedic
-  - Robocop
   - SecurityClown
   # </Trauma>
   - HeadOfSecurity
@@ -164,6 +163,7 @@
   weight: -15 # Trauma
   roles:
   - Borg
+  - Robocop
   - StationAi
 
 - type: department

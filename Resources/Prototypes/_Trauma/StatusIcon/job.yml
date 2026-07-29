@@ -2,6 +2,15 @@
 
 - type: jobIcon
   parent: JobIcon
+  id: JobIconRobocop
+  icon:
+    sprite: /Textures/_Trauma/Interface/Misc/job_icons.rsi
+    state: Robocop
+  jobName: job-name-robocop
+  isCrewJob: false
+
+- type: jobIcon
+  parent: JobIcon
   id: JobIconPhoneMerchant
   icon:
     sprite: /Textures/_Trauma/Interface/Misc/job_icons.rsi

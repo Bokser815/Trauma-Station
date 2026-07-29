@@ -322,7 +322,9 @@ public abstract partial class SharedBorgSystem : EntitySystem
         }
 
         args.Giblets.UnionWith(_container.EmptyContainer(chassis.Comp.BrainContainer));
-        args.Giblets.UnionWith(_container.EmptyContainer(chassis.Comp.ModuleContainer));
+
+        if (chassis.Comp.EjectModulesOnGib)
+            args.Giblets.UnionWith(_container.EmptyContainer(chassis.Comp.ModuleContainer));
     }
 
     private void OnGetDeadIC(Entity<BorgChassisComponent> chassis, ref GetCharactedDeadIcEvent args)

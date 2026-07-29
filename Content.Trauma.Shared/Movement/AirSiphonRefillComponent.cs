@@ -35,6 +35,6 @@ public sealed partial class AirSiphonRefillComponent : Component
     /// <summary>
     /// Time of the next update.
     /// </summary>
-    [DataField]
+    [ViewVariables]
     public TimeSpan NextRefill;
 }

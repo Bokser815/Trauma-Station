@@ -11,7 +11,7 @@
   - !type:DepartmentTimeRequirement
     department: Security
     time: 2.5h
-  icon: JobIconBorg
+  icon: JobIconRobocop
   supervisors: job-supervisors-hos
   jobEntity: PlayerRobocop
   applyTraits: false

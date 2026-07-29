@@ -11,13 +11,9 @@ namespace Content.Trauma.Server.Station;
 /// <summary>
 /// Changes the limit for jobs regardless of the map chosen if pop is within a range.
 /// Uses <see cref="JobSlotsOverridePrototype"/> prototypes defined in yml.
-/// Also adds the single RoboCop slot to standard NanoTrasen stations.
 /// </summary>
 public sealed partial class JobSlotsOverrideSystem : EntitySystem
 {
-    private const string StandardNanotrasenStation = "StandardNanotrasenStation";
-    private static readonly ProtoId<JobPrototype> RobocopJob = "Robocop";
-
     [Dependency] private ISharedPlayerManager _player = default!;
     [Dependency] private StationJobsSystem _stationJobs = default!;
 
@@ -30,26 +26,14 @@ public sealed partial class JobSlotsOverrideSystem : EntitySystem
 
     private void OnMapInit(Entity<StationJobsComponent> ent, ref MapInitEvent args)
     {
-        var changed = false;
-        if (GetSlotsOverride() is {} proto)
+        if (GetSlotsOverride() is not {} proto)
+            return; // lowpop dont care
+
+        // everything uses this so modify it first
+        foreach (var (job, slots) in proto.Jobs)
         {
-            // everything uses this so modify it first
-            foreach (var (job, slots) in proto.Jobs)
-            {
-                ent.Comp.SetupAvailableJobs[job] = [ slots, slots ];
-            }
-
-            changed = true;
+            ent.Comp.SetupAvailableJobs[job] = [ slots, slots ];
         }
-
-        if (MetaData(ent).EntityPrototype?.ID == StandardNanotrasenStation)
-        {
-            ent.Comp.SetupAvailableJobs[RobocopJob] = [ 1, 1 ];
-            changed = true;
-        }
-
-        if (!changed)
-            return;
 
         // this is needed for latejoin etc, normally created on ComponentStartup for StationData... so have to do it again now
         ent.Comp.JobList.Clear();

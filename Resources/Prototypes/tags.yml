@@ -901,9 +901,6 @@
   id: MagazinePistol # WeaponPistolMk58, WeaponPistolViper, ClothingBeltSecurity
 
 - type: Tag
-  id: MagazinePistolAuto9 # WeaponPistolAuto9
-
-- type: Tag
   id: MagazinePistolCaselessRifle # WeaponPistolCobra
 
 - type: Tag

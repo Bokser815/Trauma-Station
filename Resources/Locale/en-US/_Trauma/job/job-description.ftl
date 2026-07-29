@@ -5,4 +5,4 @@ job-description-geneticist = Modify the genes of organisms, including your fello
 job-description-cburn = Exterminate biological hazards onboard the station.
 job-description-deathsquad = Rip and tear, until it is done.
 
-job-description-robocop = Serve the public trust, protect the innocent and uphold the law from inside a mech-grade law enforcement chassis. Answer to the Head of Security.
+job-description-robocop = A relic of commune-loving Terra, these robotic law-enforcement officers were assembled from the pieces of their enemies to defend a civilization devoted to feckless indulgence. Nanotrasen revived the design for its sterling loss-prevention record and its even more impressive reduction in staffing costs.

@@ -76,7 +76,7 @@ public abstract class SharedRobocopSystem : EntitySystem
             return;
 
         UpdateLungState(ent, true);
-        _popup.PopupPredicted(Loc.GetString("robocop-lungs-removed"), ent, null);
+        _popup.PopupEntity(Loc.GetString("robocop-lungs-removed"), ent);
     }
 
     private void OnMoveInput(Entity<RobocopChassisComponent> ent, ref MoveInputEvent args)
@@ -85,7 +85,7 @@ public abstract class SharedRobocopSystem : EntitySystem
             return;
 
         ent.Comp.NextLungWarning = _timing.CurTime + ent.Comp.LungWarningCooldown;
-        _popup.PopupPredicted(
+        _popup.PopupEntity(
             Loc.GetString("robocop-lungs-missing-movement"),
             ent,
             ent,

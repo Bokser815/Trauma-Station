@@ -26,11 +26,11 @@
   id: Robocop
   name: research-technology-robocop
   icon:
-    sprite: _Trauma/Mobs/Silicon/robocop.rsi
-    state: robocop
+    sprite: _Trauma/Objects/Specific/Robotics/robocop_parts.rsi
+    state: robocop_head
   discipline: Robotics
   tier: 3
-  cost: 35000
+  cost: 15000
   recipeUnlocks:
   - RobocopEndoskeleton
   - RobocopArmorPlating
@@ -39,12 +39,9 @@
   - RobocopLegR
   - RobocopJetBoots
   - RobocopTargetingElectronics
-  position: -8,4
-  # Requires both advanced robotics and security weapons research.
+  position: -7,4
   technologyPrerequisites:
-  - ED209
   - AdvancedCybernetics
-  - PortableMicrofusionWeaponry
 
 - type: technology
   id: BasicMechEquipment
@@ -203,7 +200,7 @@
   - DiagnosticCyberneticEyes
   - SecurityCyberneticEyes
   - MedicalCyberneticEyes
-  position: -7,4
+  position: -8,4
   technologyPrerequisites:
   - BasicCybernetics
 

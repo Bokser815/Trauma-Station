@@ -5,10 +5,10 @@ using Content.Shared.Body.Components;
 using Content.Shared.Database;
 using Content.Shared.Interaction;
 using Content.Shared.Mind;
-using Content.Shared.Mind.Components;
 using Content.Shared.Popups;
 using Content.Shared.Silicons.Borgs;
 using Content.Shared.Silicons.Borgs.Components;
+using Content.Shared.Whitelist;
 using Content.Shared.Wires;
 using Content.Trauma.Shared.Robocop;
 using Robust.Shared.Containers;
@@ -17,25 +17,22 @@ using Robust.Shared.Player;
 namespace Content.Trauma.Server.Robocop;
 
 /// <summary>
-/// Initializes the chassis modules and occupant restrictions.
+/// Initializes the chassis modules and handles organic brains.
 /// </summary>
 public sealed class RobocopSystem : SharedRobocopSystem
 {
-    private const string BrainContainerId = "borg_brain";
-
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private SharedBorgSystem _borg = default!;
     [Dependency] private SharedContainerSystem _container = default!;
     [Dependency] private SharedMindSystem _mind = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private EntityWhitelistSystem _whitelist = default!;
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<RobocopChassisComponent, MapInitEvent>(OnMapInit);
-        SubscribeLocalEvent<RobocopChassisComponent, MindAddedMessage>(OnMindAdded);
-        SubscribeLocalEvent<RobocopChassisComponent, MindRemovedMessage>(OnMindRemoved);
         SubscribeLocalEvent<RobocopChassisComponent, AfterInteractUsingEvent>(OnInteractUsing);
         SubscribeLocalEvent<RobocopChassisComponent, EntInsertedIntoContainerMessage>(OnBrainInserted);
         SubscribeLocalEvent<RobocopChassisComponent, EntRemovedFromContainerMessage>(OnBrainRemoved);
@@ -67,16 +64,6 @@ public sealed class RobocopSystem : SharedRobocopSystem
         }
     }
 
-    private void OnMindAdded(Entity<RobocopChassisComponent> ent, ref MindAddedMessage args)
-    {
-        SetTrapped(args.Mind, ent.Comp.TrapOccupant);
-    }
-
-    private void OnMindRemoved(Entity<RobocopChassisComponent> ent, ref MindRemovedMessage args)
-    {
-        SetTrapped(args.Mind, false);
-    }
-
     private void OnInteractUsing(Entity<RobocopChassisComponent> ent, ref AfterInteractUsingEvent args)
     {
         if (args.Handled ||
@@ -87,8 +74,9 @@ public sealed class RobocopSystem : SharedRobocopSystem
             return;
         }
 
-        if (!_container.TryGetContainer(ent.Owner, BrainContainerId, out var brainContainer) ||
-            brainContainer.Count != 0)
+        if (!TryComp<BorgChassisComponent>(ent, out var chassis) ||
+            chassis.BrainContainer.Count != 0 ||
+            !_whitelist.IsWhitelistPassOrNull(chassis.BrainWhitelist, args.Used))
         {
             return;
         }
@@ -106,7 +94,7 @@ public sealed class RobocopSystem : SharedRobocopSystem
             return;
         }
 
-        if (!_container.Insert(args.Used, brainContainer))
+        if (!_container.Insert(args.Used, chassis.BrainContainer))
             return;
 
         _adminLog.Add(LogType.Action,
@@ -117,7 +105,8 @@ public sealed class RobocopSystem : SharedRobocopSystem
 
     private void OnBrainInserted(Entity<RobocopChassisComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
-        if (args.Container.ID != BrainContainerId ||
+        if (!TryComp<BorgChassisComponent>(ent, out var chassis) ||
+            args.Container != chassis.BrainContainer ||
             !HasComp<BrainComponent>(args.Entity) ||
             HasComp<BorgBrainComponent>(args.Entity))
         {
@@ -130,7 +119,8 @@ public sealed class RobocopSystem : SharedRobocopSystem
 
     private void OnBrainRemoved(Entity<RobocopChassisComponent> ent, ref EntRemovedFromContainerMessage args)
     {
-        if (args.Container.ID != BrainContainerId ||
+        if (!TryComp<BorgChassisComponent>(ent, out var chassis) ||
+            args.Container != chassis.BrainContainer ||
             !HasComp<BrainComponent>(args.Entity) ||
             HasComp<BorgBrainComponent>(args.Entity))
         {
@@ -139,11 +129,5 @@ public sealed class RobocopSystem : SharedRobocopSystem
 
         if (_mind.TryGetMind(ent.Owner, out var mindId, out var mind))
             _mind.TransferTo(mindId, args.Entity, mind: mind);
-    }
-
-    private void SetTrapped(Entity<MindComponent> mind, bool trapped)
-    {
-        mind.Comp.PreventGhosting = trapped;
-        mind.Comp.PreventSuicide = trapped;
     }
 }

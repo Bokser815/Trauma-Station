@@ -1,0 +1,244 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  id: RobocopChassis
+  parent: BaseBorgChassisNotIonStormable # Fixed-law chassis are not ion storm targets.
+  name: RoboCop
+  description: A law enforcement cyborg built on a mech-grade frame. There is a person in there somewhere, running on borrowed lungs.
+  components:
+  - type: Sprite
+    sprite: _Trauma/Mobs/Silicon/robocop.rsi
+    layers:
+    - state: robocop
+      map: ["enum.BorgVisualLayers.Body", "movement"]
+    - state: robocop_e_r
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: robocop_l
+      shader: unshaded
+      map: ["light", "enum.BorgVisualLayers.LightStatus"]
+      visible: false
+
+  # Laws
+  - type: SiliconLawProvider
+    laws: RobocopLawset
+  - type: EmagLawsetSwap
+    lawset: OverlordLawset
+  - type: EmagSiliconLaw
+    stunTime: 8
+
+  # Chassis
+  - type: BorgChassis
+    maxModules: 0 # Set by RobocopSystem when the default modules are added.
+    hasMindState: robocop_e
+    noMindState: robocop_e_r
+    moduleWhitelist:
+      tags:
+      - BorgModuleRobocop
+    brainWhitelist:
+      components:
+      - MMI
+      - Brain
+  - type: BorgTransponder
+    sprite:
+      sprite: _Trauma/Mobs/Silicon/robocop.rsi
+      state: robocop
+    name: RoboCop
+  - type: RobocopChassis
+    extraModuleCount: 0
+    lungSlot:
+      name: robocop-lung-slot
+      disableEject: true
+      whitelist:
+        components:
+        - Lung
+    defaultModules:
+    - BorgModuleRobocopSidearm
+    - BorgModuleRobocopTools
+    - BorgModuleRobocopHands
+    - BorgModuleRobocopPrying
+  - type: ContainerContainer
+    containers:
+      borg_brain: !type:ContainerSlot { }
+      cell_slot: !type:ContainerSlot { }
+      borg_module: !type:Container { }
+      part-container: !type:Container
+      robocop_lungs: !type:ContainerSlot { }
+  - type: Construction
+    graph: Robocop
+    node: robocop
+    containers:
+    - part-container
+    - cell_slot
+    - robocop_lungs
+
+  # Durability
+  - type: Damageable
+    damageModifierSet: SiliconProtected
+  - type: Injurable
+    damageContainer: Silicon
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      250: Critical
+      350: Dead
+    stateAlertDict:
+      Alive: BorgHealth
+      Critical: BorgCrit
+      Dead: BorgDead
+    showOverlays: false
+    allowRevives: true
+  - type: Destructible
+    generateOverkillThreshold: false
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          path: /Audio/Machines/warning_buzzer.ogg
+          params:
+            volume: 5
+    - trigger:
+        !type:DamageTrigger
+        damage: 450
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:EmptyContainersBehaviour
+        containers:
+        - robocop_lungs
+      - !type:GibBehavior
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          ScrapGlass:
+            min: 1
+            max: 2
+          SheetSteel:
+            min: 15
+            max: 25
+          SheetPlasteel1:
+            min: 3
+            max: 6
+  - type: ExplosionResistance
+    damageCoefficient: 0.6
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.2 # heavier than a standard borg
+    baseSprintSpeed: 3.9
+  - type: StaticPrice
+    price: 4000
+  - type: EmoteOnDamage
+    emoteChance: 0.5
+    emotes:
+    - Scream
+
+  # Inventory
+  - type: Inventory
+    templateId: robocop
+
+  # Security interfaces
+  - type: ShowJobIcons
+  - type: ShowCrewIcons
+  - type: ShowCriminalRecordIcons
+  - type: CriminalRecordsConsole
+  - type: IntrinsicUI
+    uis:
+      enum.StationMapUiKey.Key:
+        toggleAction: ActionShowStationMap
+      enum.CriminalRecordsConsoleKey.Key:
+        toggleAction: ActionRobocopCriminalRecords
+  - type: UserInterface
+    interfaces:
+      enum.SiliconLawsUiKey.Key:
+        type: SiliconLawBoundUserInterface
+        requireInputValidation: false
+      enum.BorgUiKey.Key:
+        type: BorgBoundUserInterface
+      enum.StrippingUiKey.Key:
+        type: StrippableBoundUserInterface
+      enum.StationMapUiKey.Key:
+        type: StationMapBoundUserInterface
+      enum.CriminalRecordsConsoleKey.Key:
+        type: CriminalRecordsConsoleBoundUserInterface
+  - type: ActionGrant
+    actions:
+    - ActionViewLaws
+    - ActionToggleJetpack
+    - ActionHailer
+  - type: Hailer
+
+  # Jet boots
+  - type: GasTank
+    releasePressure: 21.3
+    air:
+      volume: 8
+      temperature: 293.15
+  - type: Jetpack
+    moleUsage: 0.00085
+  - type: AirSiphonRefill
+    molesPerTick: 0.35
+    interval: 3
+    maxPressure: 900
+    pauseWhileFlying: true
+
+  # Radio
+  - type: CollectiveMind
+    channels: []
+  - type: IntrinsicRadioTransmitter
+    channels:
+    - Common
+    - Security
+  - type: ActiveRadio
+    channels:
+    - Common
+    - Security
+
+  # Access
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
+  - type: Access
+    enabled: false
+    tags:
+    - Security
+    - Brig
+    - Maintenance
+    - External
+    - Borg
+  - type: AccessReader
+    access: [["Security"], ["Research"]]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesBorg
+  - type: InteractionPopup
+    interactSuccessSound:
+      path: /Audio/Ambience/Objects/periodic_beep.ogg
+  - type: GuideHelp
+    guides:
+    - Cyborgs
+    - Robotics
+    - Security
+
+- type: entity
+  id: PlayerRobocop
+  parent: RobocopChassis
+  suffix: Round-start
+  categories: [ HideSpawnMenu, DoNotMap ]
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+      - OrganHumanBrain
+      robocop_lungs:
+      - OrganHumanLungs
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellMedium
+  - type: StartingMindRole
+    mindRole: MindRoleSiliconBrain
+    silent: true

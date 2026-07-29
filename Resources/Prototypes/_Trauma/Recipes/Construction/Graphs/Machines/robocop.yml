@@ -1,0 +1,60 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: constructionGraph
+  id: Robocop
+  start: start
+  graph:
+  - node: start
+    entity: RobocopEndoskeleton
+    edges:
+    - to: robocop
+      steps:
+      - assemblyId: generic
+        guideString: robocop-construction-guide-string
+
+      - tool: Screwing
+        doAfter: 1
+
+      - tag: RobocopTargetingModule
+        name: construction-graph-tag-robocop-directive-core
+        icon:
+          sprite: Objects/Misc/module.rsi
+          state: mcontroller
+
+      - tool: Screwing
+        doAfter: 1
+
+      - component: PowerCell
+        name: construction-graph-component-power-cell
+        store: cell_slot
+        icon:
+          sprite: Objects/Power/power_cells.rsi
+          state: small
+
+      - material: Cable
+        amount: 5
+        doAfter: 1
+        store: part-container
+
+      - tool: Cutting
+        doAfter: 1
+
+      - component: Flash
+        name: construction-graph-component-flash
+        store: part-container
+        icon:
+          sprite: Objects/Weapons/Melee/flash.rsi
+          state: flash
+
+      - component: Flash
+        name: construction-graph-component-second-flash
+        store: part-container
+        icon:
+          sprite: Objects/Weapons/Melee/flash.rsi
+          state: flash
+
+      - tool: Screwing
+        doAfter: 2
+
+  - node: robocop
+    entity: RobocopChassis

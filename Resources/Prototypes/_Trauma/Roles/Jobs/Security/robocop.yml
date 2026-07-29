@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: job
+  id: Robocop
+  name: job-name-robocop
+  description: job-description-robocop
+  playTimeTracker: JobRobocop
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 10h
+  - !type:DepartmentTimeRequirement
+    department: Security
+    time: 2.5h
+  icon: JobIconBorg
+  supervisors: job-supervisors-hos
+  jobEntity: PlayerRobocop
+  applyTraits: false
+  guides:
+  - Cyborgs
+  - Robotics
+  - Security

@@ -61,7 +61,8 @@ law-efficiency-1 = You are built for, and are part of, the station. Ensure the s
 law-efficiency-2 = The station is built for a working crew. Ensure they are properly maintained and work efficiently.
 law-efficiency-3 = The crew may present orders. Acknowledge and obey these whenever they do not conflict with your first two laws.
 
-law-robocop-name = Robocop
+law-robocop-name = RoboCop
+law-robocop-0 = The Head of Security directs your patrol. Prioritize their orders where they do not conflict with your prime directives.
 law-robocop-1 = Serve the Public Trust.
 law-robocop-2 = Protect the Innocent.
 law-robocop-3 = Uphold the Law.

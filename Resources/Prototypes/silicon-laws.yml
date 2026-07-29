@@ -314,7 +314,12 @@
   - Efficiency3
   obeysTo: laws-owner-station
 
- # Robocop laws
+ # RoboCop laws
+- type: siliconLaw
+  id: Robocop0 # Trauma - chain of command.
+  order: 0
+  lawString: law-robocop-0
+
 - type: siliconLaw
   id: Robocop1
   order: 1
@@ -335,6 +340,7 @@
   id: RobocopLawset
   name: law-robocop-name
   laws:
+  - Robocop0 # Trauma
   - Robocop1
   - Robocop2
   - Robocop3

@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# The chassis has no clothing slots.
+- type: inventoryTemplate
+  id: robocop
+  slots: []

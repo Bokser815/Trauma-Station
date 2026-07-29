@@ -1,0 +1,66 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+- type: latheRecipe
+  parent: BaseRoboticsRecipe
+  id: RobocopEndoskeleton
+  result: RobocopEndoskeleton
+  completetime: 15
+  materials:
+    Steel: 1500
+    Diamond: 100
+    Uranium: 1000
+
+- type: latheRecipe
+  parent: BaseBorgLimbRecipe
+  id: BaseRobocopPartRecipe
+  abstract: true
+  materials:
+    Steel: 250
+    Glass: 100
+    Plasteel: 200
+
+- type: latheRecipe
+  parent: BaseRobocopPartRecipe
+  id: RobocopArmorPlating
+  result: RobocopArmorPlating
+  completetime: 12
+
+- type: latheRecipe
+  parent: BaseRobocopPartRecipe
+  id: RobocopHead
+  result: RobocopHead
+  completetime: 10
+
+- type: latheRecipe
+  parent: BaseRobocopPartRecipe
+  id: RobocopLegL
+  result: RobocopLegL
+  completetime: 10
+
+- type: latheRecipe
+  parent: BaseRobocopPartRecipe
+  id: RobocopLegR
+  result: RobocopLegR
+  completetime: 10
+
+- type: latheRecipe
+  parent: BaseRobocopPartRecipe
+  id: RobocopJetBoots
+  result: RobocopJetBoots
+  completetime: 10
+
+- type: latheRecipe
+  parent: BaseGoldCircuitboardRecipe
+  id: RobocopTargetingElectronics
+  result: RobocopTargetingElectronics
+  completetime: 8
+
+- type: latheRecipePack
+  id: TraumaRobocopParts
+  recipes:
+  - RobocopEndoskeleton
+  - RobocopArmorPlating
+  - RobocopHead
+  - RobocopLegL
+  - RobocopLegR
+  - RobocopJetBoots
+  - RobocopTargetingElectronics

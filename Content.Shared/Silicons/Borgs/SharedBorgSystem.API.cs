@@ -27,7 +27,10 @@ public abstract partial class SharedBorgSystem
         if (_mobState.IsIncapacitated(chassis.Owner))
             return false;
 
-        return true;
+        var ev = new BorgCanActivateEvent();
+        RaiseLocalEvent(chassis.Owner, ref ev);
+
+        return !ev.Cancelled;
     }
 
     /// <summary>
@@ -323,3 +326,9 @@ public abstract partial class SharedBorgSystem
         Dirty(chassis);
     }
 }
+
+/// <summary>
+/// Raised before a borg chassis is activated.
+/// </summary>
+[ByRefEvent]
+public record struct BorgCanActivateEvent(bool Cancelled = false);

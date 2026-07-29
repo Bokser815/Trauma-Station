@@ -132,6 +132,7 @@
   roles:
   # <Trauma>
   - Brigmedic
+  - Robocop
   - SecurityClown
   # </Trauma>
   - HeadOfSecurity

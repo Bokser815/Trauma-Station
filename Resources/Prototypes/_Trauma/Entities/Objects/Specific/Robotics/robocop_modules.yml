@@ -1,0 +1,149 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  name: advanced disabler
+  parent: WeaponDisabler
+  id: WeaponDisablerRobocop
+  description: A chassis-mounted disabler with a ten-shot cell that recharges over time.
+  components:
+  - type: Battery
+    maxCharge: 625
+    startingCharge: 625
+  - type: BatterySelfRecharger
+    autoRechargeRate: 12.5
+  - type: StaticPrice
+    price: 250
+
+- type: entity
+  name: advanced stun baton
+  parent: Stunbaton
+  id: StunbatonRobocop
+  description: A chassis-mounted stun baton with a ten-use cell that recharges over time.
+  components:
+  - type: Battery
+    maxCharge: 500
+    startingCharge: 500
+  - type: BatterySelfRecharger
+    autoRechargeRate: 10
+  - type: StaticPrice
+    price: 250
+
+- type: entity
+  name: advanced cuffs
+  parent: BaseItem
+  id: HandcuffsRobocop
+  description: A chassis-mounted restraint applicator that fabricates a fresh set of handcuffs whenever it is used.
+  components:
+  - type: EmitSoundOnPickup
+    sound:
+      path: /Audio/_Goobstation/Items/other/Handcuffs/pickup.ogg
+      params:
+        volume: -4
+  - type: EmitSoundOnDrop
+    sound:
+      path: /Audio/_Goobstation/Items/other/Handcuffs/drop.ogg
+      params:
+        volume: -4
+  - type: Item
+    size: Small
+    storedRotation: 90
+  - type: Sprite
+    sprite: Objects/Misc/handcuffs.rsi
+    state: handcuff
+  - type: ReusableCuffs
+  - type: MeleeWeapon
+    wideAnimationRotation: 90
+    resetOnHandSelected: false
+    damage:
+      types:
+        Blunt: 0
+  - type: UseDelay
+    delay: 3
+  - type: GuideHelp
+    guides:
+    - Security
+    - Antagonists
+
+- type: entity
+  id: BorgModuleRobocopSidearm
+  parent: [ BaseBorgModule, BaseProviderBorgModule ]
+  name: RoboCop security module
+  description: The integrated security equipment of a RoboCop unit.
+  components:
+  - type: Sprite
+    layers:
+    - state: generic
+    - state: icon-syndicate
+  - type: BorgModule
+    borgFitTypes:
+    - borg-type-robocop
+  - type: ItemBorgModule
+    hands:
+    - item: WeaponDisablerRobocop
+    - item: StunbatonRobocop
+    - item: HandcuffsRobocop
+    - item: WeaponPistolAuto9ROW
+  - type: BorgModuleIcon
+    icon: { sprite: _Trauma/Objects/Weapons/Guns/Pistols/auto9.rsi, state: icon }
+  - type: Tag
+    tags:
+    - BorgModuleRobocop
+
+- type: entity
+  id: BorgModuleRobocopTools
+  parent: BorgModuleTool
+  name: RoboCop tool module
+  components:
+  - type: BorgModule
+    borgFitTypes:
+    - borg-type-robocop
+  - type: Tag
+    tags:
+    - BorgModuleRobocop
+
+- type: entity
+  id: BorgModuleRobocopHands
+  parent: [ BaseBorgModule, BaseProviderBorgModule ]
+  name: RoboCop manipulator module
+  description: General purpose manipulators, for handling evidence and hauling the occasional body.
+  components:
+  - type: Sprite
+    layers:
+    - state: generic
+    - state: icon-tools
+  - type: BorgModule
+    borgFitTypes:
+    - borg-type-robocop
+  - type: ItemBorgModule
+    hands:
+    - forceRemovable: true
+    - forceRemovable: true
+  - type: BorgModuleIcon
+    icon: { sprite: Interface/Actions/actions_borg.rsi, state: no-action }
+  - type: Tag
+    tags:
+    - BorgModuleRobocop
+
+- type: entity
+  id: BorgModuleRobocopPrying
+  parent: [ BaseBorgModule ]
+  name: RoboCop hydraulic module
+  description: Hydraulic actuators strong enough to force a door open by hand.
+  components:
+  - type: Sprite
+    layers:
+    - state: generic
+    - state: icon-tools
+  - type: BorgModule
+    borgFitTypes:
+    - borg-type-robocop
+  - type: ComponentBorgModule
+    components:
+    - type: Prying
+      pryPowered: true
+      speedModifier: 1.5
+      useSound:
+        path: /Audio/Items/jaws_pry.ogg
+  - type: Tag
+    tags:
+    - BorgModuleRobocop

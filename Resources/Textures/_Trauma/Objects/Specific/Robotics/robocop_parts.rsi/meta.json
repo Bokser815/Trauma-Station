@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Spriting by Bokser815 for Trauma Station.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "robocop_boots"
+    },
+    {
+      "name": "robocop_boots+o"
+    },
+    {
+      "name": "robocop_chest"
+    },
+    {
+      "name": "robocop_chest+o"
+    },
+    {
+      "name": "robocop_endo"
+    },
+    {
+      "name": "robocop_head"
+    },
+    {
+      "name": "robocop_head+o"
+    },
+    {
+      "name": "robocop_l_leg"
+    },
+    {
+      "name": "robocop_l_leg+o"
+    },
+    {
+      "name": "robocop_r_leg"
+    },
+    {
+      "name": "robocop_r_leg+o"
+    }
+  ]
+}

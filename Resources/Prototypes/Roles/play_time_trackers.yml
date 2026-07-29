@@ -118,6 +118,9 @@
 - type: playTimeTracker
   id: JobResearchDirector
 
+- type: playTimeTracker # Trauma
+  id: JobRobocop
+
 - type: playTimeTracker
   id: JobSalvageSpecialist
 

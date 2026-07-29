@@ -1,0 +1,121 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  id: BaseWeaponPistolAuto9
+  parent: BaseItem
+  abstract: true
+  components:
+  - type: WeaponClass
+    class: Pistol
+  - type: Gun
+    minAngle: 1
+    maxAngle: 8
+    angleIncrease: 3
+    angleDecay: 16
+    fireRate: 4
+    burstFireRate: 12
+    burstCooldown: 0.6
+    shotsPerBurst: 3
+    selectedMode: Burst
+    availableModes:
+    - Burst
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/mk58.ogg
+  - type: Sprite
+    sprite: _Trauma/Objects/Weapons/Guns/Pistols/auto9.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+  - type: Item
+    size: Normal
+    sprite: _Trauma/Objects/Weapons/Guns/Pistols/auto9.rsi
+  - type: Clothing
+    sprite: _Trauma/Objects/Weapons/Guns/Pistols/auto9.rsi
+    quickEquip: false
+    slots:
+    - suitStorage
+    - Belt
+  - type: Tag
+    tags:
+    - Sidearm
+  - type: StaticPrice
+    price: 1500
+
+- type: entity
+  name: Auto-9
+  id: WeaponPistolAuto9
+  parent: BaseWeaponPistolAuto9
+  description: A large machine pistol that fires .35 auto ammunition in three-round bursts. Feeds from proprietary 15-round magazines.
+  components:
+  - type: ChamberMagazineAmmoProvider
+    soundRack:
+      path: /Audio/Weapons/Guns/Cock/pistol_cock.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazinePistolAuto9
+        insertSound: /Audio/Weapons/Guns/MagIn/pistol_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/pistol_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - MagazinePistolAuto9
+        whitelistFailPopup: gun-magazine-whitelist-fail
+      gun_chamber:
+        name: Chamber
+        priority: 1
+        whitelist:
+          tags:
+          - CartridgePistol
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: AmmoCounter
+
+- type: entity
+  name: Auto-9 ROW
+  id: WeaponPistolAuto9ROW
+  parent: BaseWeaponPistolAuto9
+  description: A chassis-mounted Auto-9 with an internal ammunition fabricator. It replenishes its 15-round supply over time.
+  components:
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - CartridgePistol
+    capacity: 15
+    proto: CartridgePistol
+    cycleable: false
+  - type: BallisticAmmoSelfRefiller
+    autoRefillRate: 6s
+    affectedByEmp: true
+  - type: AmmoCounter
+
+- type: entity
+  name: Auto-9 magazine (.35 auto)
+  id: MagazinePistolAuto9
+  parent: BaseMagazinePistolHighCapacity
+  description: A proprietary 15-round magazine for the Auto-9.
+  components:
+  - type: BallisticAmmoProvider
+    capacity: 15
+    proto: CartridgePistol
+  - type: Tag
+    tags:
+    - MagazinePistolAuto9
+  - type: Sprite
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left-mag
+      right:
+      - state: inhand-right-mag

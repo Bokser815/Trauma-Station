@@ -79,8 +79,8 @@
 - type: entity
   id: RobocopCircuitBoard
   parent: BaseSiliconLawboard
-  name: law board (Robocop)
-  description: An electronics board containing the Robocop lawset.
+  name: law board (RoboCop)
+  description: An electronics board containing the RoboCop lawset.
   components:
   - type: SiliconLawProvider
     laws: RobocopLawset

@@ -1,0 +1,200 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# ItemMapper displays installed parts on the endoskeleton.
+
+- type: entity
+  id: RobocopEndoskeleton
+  name: cyborg law enforcement endoskeleton
+  description: A diamond-laced titanium frame used to build a RoboCop unit. Heavy enough that you regret carrying it.
+  components:
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: Dynamic
+    fixedRotation: false
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.25,0.25,0.25"
+        density: 100
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+        restitution: 0.3
+        friction: 0.2
+  - type: Sprite
+    noRot: true
+    drawdepth: Items
+    sprite: _Trauma/Objects/Specific/Robotics/robocop_parts.rsi
+    state: robocop_endo
+  - type: Appearance
+  - type: ItemMapper
+    sprite: _Trauma/Objects/Specific/Robotics/robocop_parts.rsi
+    mapLayers:
+      robocop_l_leg+o:
+        whitelist:
+          tags:
+          - RobocopLegL
+      robocop_r_leg+o:
+        whitelist:
+          tags:
+          - RobocopLegR
+      robocop_boots+o:
+        whitelist:
+          tags:
+          - RobocopJetBoots
+      robocop_chest+o:
+        whitelist:
+          tags:
+          - RobocopArmorPlating
+      robocop_head+o:
+        whitelist:
+          tags:
+          - RobocopHead
+  - type: ContainerContainer
+    containers:
+      part-container: !type:Container
+      cell_slot: !type:ContainerSlot
+  - type: PartAssembly
+    parts:
+      generic:
+      - RobocopArmorPlating
+      - RobocopHead
+      - RobocopLegL
+      - RobocopLegR
+      - RobocopJetBoots
+    containerId: part-container
+  - type: Construction
+    graph: Robocop
+    node: start
+    defaultTarget: robocop
+    containers:
+    - part-container
+    - cell_slot
+  - type: Pullable
+  - type: StaticPrice
+    price: 2000
+  - type: GuideHelp
+    guides:
+    - Robotics
+    - Cyborgs
+
+- type: entity
+  id: RobocopArmorPlating
+  name: RoboCop armor plating
+  parent: BaseItem
+  description: Layered plasteel and diamond composite plating. Rated to shrug off small arms fire, and not much softer than a shaped charge.
+  components:
+  - type: Item
+    size: Ginormous
+  - type: Sprite
+    sprite: _Trauma/Objects/Specific/Robotics/robocop_parts.rsi
+    state: robocop_chest
+  - type: Tag
+    tags:
+    - RobocopArmorPlating
+  - type: StaticPrice
+    price: 1200
+  - type: GuideHelp
+    guides:
+    - Robotics
+
+- type: entity
+  id: RobocopHead
+  name: RoboCop helmet assembly
+  parent: BaseItem
+  description: A sealed helmet with an integrated security HUD and records uplink. The visor is the only part left uncovered.
+  components:
+  - type: Item
+    size: Huge
+  - type: Sprite
+    sprite: _Trauma/Objects/Specific/Robotics/robocop_parts.rsi
+    state: robocop_head
+  - type: Tag
+    tags:
+    - RobocopHead
+  - type: StaticPrice
+    price: 900
+  - type: GuideHelp
+    guides:
+    - Robotics
+
+- type: entity
+  id: RobocopLegL
+  name: RoboCop left leg
+  parent: BaseItem
+  description: The left leg of a RoboCop unit. The boot is hollowed out for a thruster assembly.
+  components:
+  - type: Item
+    size: Huge
+  - type: Sprite
+    sprite: _Trauma/Objects/Specific/Robotics/robocop_parts.rsi
+    state: robocop_l_leg
+  - type: Tag
+    tags:
+    - RobocopLegL
+  - type: StaticPrice
+    price: 600
+  - type: GuideHelp
+    guides:
+    - Robotics
+
+- type: entity
+  id: RobocopLegR
+  name: RoboCop right leg
+  parent: BaseItem
+  description: The right leg of a RoboCop unit. The boot is hollowed out for a thruster assembly.
+  components:
+  - type: Item
+    size: Huge
+  - type: Sprite
+    sprite: _Trauma/Objects/Specific/Robotics/robocop_parts.rsi
+    state: robocop_r_leg
+  - type: Tag
+    tags:
+    - RobocopLegR
+  - type: StaticPrice
+    price: 600
+  - type: GuideHelp
+    guides:
+    - Robotics
+
+- type: entity
+  id: RobocopJetBoots
+  name: jet boot thruster pack
+  parent: BaseItem
+  description: A pair of compact thrusters that bolt into a RoboCop's boots. They draw propellant from the surrounding atmosphere.
+  components:
+  - type: Item
+    size: Large
+  - type: Sprite
+    sprite: _Trauma/Objects/Specific/Robotics/robocop_parts.rsi
+    state: robocop_boots
+  - type: Tag
+    tags:
+    - RobocopJetBoots
+  - type: StaticPrice
+    price: 800
+  - type: GuideHelp
+    guides:
+    - Robotics
+
+- type: entity
+  id: RobocopTargetingElectronics
+  parent: BaseElectronics
+  name: RoboCop directive core
+  description: The law-bound targeting and directive core for a RoboCop unit. Its prime directives are burned in at the factory.
+  components:
+  - type: Item
+    storedRotation: 0
+  - type: Sprite
+    sprite: Objects/Misc/module.rsi
+    state: mcontroller
+  - type: Tag
+    tags:
+    - RobocopTargetingModule
+  - type: GuideHelp
+    guides:
+    - Robotics

@@ -23,6 +23,30 @@
   - Gygax
 
 - type: technology
+  id: Robocop
+  name: research-technology-robocop
+  icon:
+    sprite: _Trauma/Mobs/Silicon/robocop.rsi
+    state: robocop
+  discipline: Robotics
+  tier: 3
+  cost: 35000
+  recipeUnlocks:
+  - RobocopEndoskeleton
+  - RobocopArmorPlating
+  - RobocopHead
+  - RobocopLegL
+  - RobocopLegR
+  - RobocopJetBoots
+  - RobocopTargetingElectronics
+  position: -8,4
+  # Requires both advanced robotics and security weapons research.
+  technologyPrerequisites:
+  - ED209
+  - AdvancedCybernetics
+  - PortableMicrofusionWeaponry
+
+- type: technology
   id: BasicMechEquipment
   name: research-technology-mech-basic-equipment
   icon:

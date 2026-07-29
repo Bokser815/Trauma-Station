@@ -39,6 +39,9 @@
   id: BloodVial
 
 - type: Tag
+  id: BorgModuleRobocop # RoboCop module whitelist.
+
+- type: Tag
   id: BowImprovised # Construction: AltarConvertOrange, given to improvised shortbow, used to get Iradomini nullrod's altar
 
 - type: Tag
@@ -206,6 +209,24 @@
 
 - type: Tag
   id: RechargingBoard # Construction: WeaponGaussgunImprov, WeaponGaussgunPistol
+
+- type: Tag
+  id: RobocopArmorPlating # Construction: RoboCop
+
+- type: Tag
+  id: RobocopHead
+
+- type: Tag
+  id: RobocopLegL
+
+- type: Tag
+  id: RobocopLegR
+
+- type: Tag
+  id: RobocopTargetingModule
+
+- type: Tag
+  id: RobocopJetBoots
 
 - type: Tag
   id: RevArmorPlate # Construction: ClothingShoesBootsRevSteel, ClothingOuterVestWebRev, Killdozer, T45Armor

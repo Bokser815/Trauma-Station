@@ -4,3 +4,5 @@ job-description-geneticist = Modify the genes of organisms, including your fello
 # upstream never made these lol
 job-description-cburn = Exterminate biological hazards onboard the station.
 job-description-deathsquad = Rip and tear, until it is done.
+
+job-description-robocop = Serve the public trust, protect the innocent and uphold the law from inside a mech-grade law enforcement chassis. Answer to the Head of Security.

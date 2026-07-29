@@ -406,6 +406,7 @@
     # <Trauma>
     - TraumaCybernetics
     - TraumaMechParts
+    - TraumaRobocopParts
     - MechBoardsCargo
     - MechBoardsSecurity
     # </Trauma>

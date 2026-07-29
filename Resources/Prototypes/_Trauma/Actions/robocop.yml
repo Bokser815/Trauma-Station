@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  parent: BaseMentalAction
+  id: ActionRobocopCriminalRecords
+  name: Criminal Records
+  description: Query station criminal records and update wanted statuses directly.
+  components:
+  - type: Action
+    icon: { sprite: Structures/Machines/computers.rsi, state: security_key }
+    keywords: [ "records", "wanted", "security", "criminal" ]
+    priority: -7
+  - type: InstantAction
+    event: !type:ToggleIntrinsicUIEvent { key: enum.CriminalRecordsConsoleKey.Key }

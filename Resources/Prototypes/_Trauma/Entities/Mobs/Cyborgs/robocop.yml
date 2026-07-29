@@ -2,7 +2,7 @@
 
 - type: entity
   id: RobocopChassis
-  parent: [BaseBorgChassisNotIonStormable, BaseBorgTransponder] # Fixed-law chassis are not ion storm targets.
+  parent: [BaseBorgChassisNotIonStormable, BaseBorgTransponder, MobNightVision] # Fixed-law chassis are not ion storm targets.
   name: RoboCop
   description: A law enforcement cyborg built on a mech-grade frame. There is a person in there somewhere, running on borrowed lungs.
   components:
@@ -137,6 +137,8 @@
     emoteChance: 0.5
     emotes:
     - Scream
+  - type: FlashImmunity
+    showInExamine: false
 
   # Inventory
   - type: Inventory

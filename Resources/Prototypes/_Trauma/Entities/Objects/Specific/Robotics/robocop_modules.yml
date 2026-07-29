@@ -117,7 +117,6 @@
   - type: ItemBorgModule
     hands:
     - forceRemovable: true
-    - forceRemovable: true
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: no-action }
   - type: Tag

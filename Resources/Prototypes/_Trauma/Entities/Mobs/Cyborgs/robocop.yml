@@ -60,7 +60,7 @@
     - BorgModuleRobocopHands
     - BorgModuleRobocopPrying
   - type: Puller
-    needsHands: true
+    needsHands: false
     startingGrabStage: Hard
     throwingDistance: 8
     grabThrownSpeed: 12
@@ -136,6 +136,12 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 2.2 # heavier than a standard borg
     baseSprintSpeed: 3.9
+  - type: FootstepModifier
+    footstepSoundCollection:
+      collection: FootstepHeavySuit
+      params:
+        volume: 3
+        maxDistance: 25
   - type: StaticPrice
     price: 4000
   - type: EmoteOnDamage
@@ -214,7 +220,7 @@
     - Brig
     - Maintenance
     - External
-    - Borg
+    - Cryogenics
   - type: AccessReader
     access: [["Security"], ["Research"]]
   - type: RandomMetadata

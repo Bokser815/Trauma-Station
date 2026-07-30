@@ -11,7 +11,7 @@ namespace Content.Trauma.Server.Movement;
 /// <summary>
 /// Transfers atmospheric gas into an internal tank.
 /// </summary>
-public sealed class AirSiphonRefillSystem : EntitySystem
+public sealed partial class AirSiphonRefillSystem : EntitySystem
 {
     [Dependency] private AtmosphereSystem _atmosphere = default!;
     [Dependency] private GasTankSystem _gasTank = default!;

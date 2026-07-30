@@ -10,7 +10,7 @@ namespace Content.Trauma.Server.Silicons.Laws;
 /// <summary>
 /// Applies a replacement lawset after a silicon is emagged.
 /// </summary>
-public sealed class EmagLawsetSwapSystem : EntitySystem
+public sealed partial class EmagLawsetSwapSystem : EntitySystem
 {
     [Dependency] private SiliconLawSystem _siliconLaw = default!;
 

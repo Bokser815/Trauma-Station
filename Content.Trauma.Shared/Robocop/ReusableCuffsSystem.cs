@@ -19,7 +19,7 @@ using Robust.Shared.Serialization;
 
 namespace Content.Trauma.Shared.Robocop;
 
-public sealed class ReusableCuffsSystem : EntitySystem
+public sealed partial class ReusableCuffsSystem : EntitySystem
 {
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private SharedAudioSystem _audio = default!;

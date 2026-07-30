@@ -16,7 +16,7 @@ namespace Content.Trauma.Shared.Robocop;
 /// <summary>
 /// Handles the organ requirement for a <see cref="RobocopChassisComponent"/>.
 /// </summary>
-public abstract class SharedRobocopSystem : EntitySystem
+public abstract partial class SharedRobocopSystem : EntitySystem
 {
     [Dependency] private ItemSlotsSystem _itemSlots = default!;
     [Dependency] private ActionBlockerSystem _actionBlocker = default!;

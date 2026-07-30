@@ -19,7 +19,7 @@ namespace Content.Trauma.Server.Robocop;
 /// <summary>
 /// Initializes the chassis modules and handles organic brains.
 /// </summary>
-public sealed class RobocopSystem : SharedRobocopSystem
+public sealed partial class RobocopSystem : SharedRobocopSystem
 {
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private SharedBorgSystem _borg = default!;

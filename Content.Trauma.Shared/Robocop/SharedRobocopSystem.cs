@@ -34,8 +34,8 @@ public abstract partial class SharedRobocopSystem : EntitySystem
         SubscribeLocalEvent<RobocopChassisComponent, ComponentRemove>(OnRemove);
         SubscribeLocalEvent<RobocopChassisComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<RobocopChassisComponent, BorgCanActivateEvent>(OnCanActivate);
-        SubscribeLocalEvent<RobocopChassisComponent, EntInsertedIntoContainerMessage>(OnLungsInserted);
-        SubscribeLocalEvent<RobocopChassisComponent, EntRemovedFromContainerMessage>(OnLungsRemoved);
+        SubscribeLocalEvent<RobocopChassisComponent, EntInsertedIntoContainerMessage>(OnEntInserted);
+        SubscribeLocalEvent<RobocopChassisComponent, EntRemovedFromContainerMessage>(OnEntRemoved);
         SubscribeLocalEvent<RobocopChassisComponent, MoveInputEvent>(OnMoveInput);
         SubscribeLocalEvent<RobocopChassisComponent, StandAttemptEvent>(OnStandAttempt);
         SubscribeLocalEvent<RobocopChassisComponent, UpdateCanMoveEvent>(OnCanMove);
@@ -51,7 +51,7 @@ public abstract partial class SharedRobocopSystem : EntitySystem
         _itemSlots.RemoveItemSlot(ent.Owner, ent.Comp.LungSlot);
     }
 
-    private void OnMapInit(Entity<RobocopChassisComponent> ent, ref MapInitEvent args)
+    protected virtual void OnMapInit(Entity<RobocopChassisComponent> ent, ref MapInitEvent args)
     {
         UpdateLungState(ent, false);
     }
@@ -62,7 +62,7 @@ public abstract partial class SharedRobocopSystem : EntitySystem
             args.Cancelled = true;
     }
 
-    private void OnLungsInserted(Entity<RobocopChassisComponent> ent, ref EntInsertedIntoContainerMessage args)
+    protected virtual void OnEntInserted(Entity<RobocopChassisComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
         if (args.Container.ID != ent.Comp.LungSlotId)
             return;
@@ -70,7 +70,7 @@ public abstract partial class SharedRobocopSystem : EntitySystem
         UpdateLungState(ent, false);
     }
 
-    private void OnLungsRemoved(Entity<RobocopChassisComponent> ent, ref EntRemovedFromContainerMessage args)
+    protected virtual void OnEntRemoved(Entity<RobocopChassisComponent> ent, ref EntRemovedFromContainerMessage args)
     {
         if (args.Container.ID != ent.Comp.LungSlotId)
             return;

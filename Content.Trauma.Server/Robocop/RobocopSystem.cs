@@ -32,14 +32,13 @@ public sealed partial class RobocopSystem : SharedRobocopSystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<RobocopChassisComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<RobocopChassisComponent, AfterInteractUsingEvent>(OnInteractUsing);
-        SubscribeLocalEvent<RobocopChassisComponent, EntInsertedIntoContainerMessage>(OnBrainInserted);
-        SubscribeLocalEvent<RobocopChassisComponent, EntRemovedFromContainerMessage>(OnBrainRemoved);
     }
 
-    private void OnMapInit(Entity<RobocopChassisComponent> ent, ref MapInitEvent args)
+    protected override void OnMapInit(Entity<RobocopChassisComponent> ent, ref MapInitEvent args)
     {
+        base.OnMapInit(ent, ref args);
+
         if (ent.Comp.DefaultModules.Count == 0)
             return;
 
@@ -103,8 +102,10 @@ public sealed partial class RobocopSystem : SharedRobocopSystem
         args.Handled = true;
     }
 
-    private void OnBrainInserted(Entity<RobocopChassisComponent> ent, ref EntInsertedIntoContainerMessage args)
+    protected override void OnEntInserted(Entity<RobocopChassisComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
+        base.OnEntInserted(ent, ref args);
+
         if (!TryComp<BorgChassisComponent>(ent, out var chassis) ||
             args.Container != chassis.BrainContainer ||
             !HasComp<BrainComponent>(args.Entity) ||
@@ -117,8 +118,10 @@ public sealed partial class RobocopSystem : SharedRobocopSystem
             _mind.TransferTo(mindId, ent.Owner, mind: mind);
     }
 
-    private void OnBrainRemoved(Entity<RobocopChassisComponent> ent, ref EntRemovedFromContainerMessage args)
+    protected override void OnEntRemoved(Entity<RobocopChassisComponent> ent, ref EntRemovedFromContainerMessage args)
     {
+        base.OnEntRemoved(ent, ref args);
+
         if (!TryComp<BorgChassisComponent>(ent, out var chassis) ||
             args.Container != chassis.BrainContainer ||
             !HasComp<BrainComponent>(args.Entity) ||

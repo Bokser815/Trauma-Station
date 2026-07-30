@@ -1,18 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-using Content.Shared.Administration.Logs;
 using Content.Shared.Body.Components;
-using Content.Shared.Database;
-using Content.Shared.Interaction;
 using Content.Shared.Mind;
-using Content.Shared.Popups;
 using Content.Shared.Silicons.Borgs;
 using Content.Shared.Silicons.Borgs.Components;
-using Content.Shared.Whitelist;
-using Content.Shared.Wires;
+using Content.Trauma.Common.Silicons.Borgs;
 using Content.Trauma.Shared.Robocop;
 using Robust.Shared.Containers;
-using Robust.Shared.Player;
 
 namespace Content.Trauma.Server.Robocop;
 
@@ -21,33 +15,27 @@ namespace Content.Trauma.Server.Robocop;
 /// </summary>
 public sealed partial class RobocopSystem : SharedRobocopSystem
 {
-    [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private SharedBorgSystem _borg = default!;
     [Dependency] private SharedContainerSystem _container = default!;
     [Dependency] private SharedMindSystem _mind = default!;
-    [Dependency] private SharedPopupSystem _popup = default!;
-    [Dependency] private EntityWhitelistSystem _whitelist = default!;
 
     public override void Initialize()
     {
         base.Initialize();
 
-        SubscribeLocalEvent<RobocopChassisComponent, AfterInteractUsingEvent>(OnInteractUsing);
+        SubscribeLocalEvent<RobocopChassisComponent, BrainInsertedIntoBorgEvent>(OnBrainInserted);
+        SubscribeLocalEvent<RobocopChassisComponent, BrainRemovedFromBorgEvent>(OnBrainRemoved);
     }
 
     protected override void OnMapInit(Entity<RobocopChassisComponent> ent, ref MapInitEvent args)
     {
         base.OnMapInit(ent, ref args);
 
-        if (ent.Comp.DefaultModules.Count == 0)
-            return;
-
         if (!TryComp<BorgChassisComponent>(ent, out var chassis))
             return;
 
         var chassisEnt = new Entity<BorgChassisComponent>(ent.Owner, chassis);
-
-        _borg.SetMaxModules(chassisEnt, ent.Comp.ExtraModuleCount + ent.Comp.DefaultModules.Count);
+        var installed = 0;
 
         foreach (var module in ent.Comp.DefaultModules)
         {
@@ -60,77 +48,47 @@ public sealed partial class RobocopSystem : SharedRobocopSystem
 
             _borg.SetBorgModuleDefault((moduleEntity, moduleComp), true);
             _borg.InsertModule(chassisEnt, moduleEntity);
+
+            // InsertModule does not report failure, so don't leave the module lying around if it didn't take.
+            // The module was spawned in nullspace, so being in any container means it went into the chassis.
+            if (!_container.IsEntityInContainer(moduleEntity))
+            {
+                Del(moduleEntity);
+                continue;
+            }
+
+            installed++;
         }
+
+        // Only count the modules that actually made it in, otherwise the chassis is left with unusable slots.
+        _borg.SetMaxModules(chassisEnt, ent.Comp.ExtraModuleCount + installed);
     }
 
-    private void OnInteractUsing(Entity<RobocopChassisComponent> ent, ref AfterInteractUsingEvent args)
+    /// <summary>
+    /// An organic brain has no <see cref="BorgBrainComponent"/>, so <see cref="SharedBorgSystem"/> leaves the mind
+    /// where it is.
+    /// </summary>
+    private void OnBrainInserted(Entity<RobocopChassisComponent> ent, ref BrainInsertedIntoBorgEvent args)
     {
-        if (args.Handled ||
-            !args.CanReach ||
-            args.User == ent.Owner ||
-            !HasComp<BrainComponent>(args.Used))
-        {
-            return;
-        }
-
-        if (!TryComp<BorgChassisComponent>(ent, out var chassis) ||
-            chassis.BrainContainer.Count != 0 ||
-            !_whitelist.IsWhitelistPassOrNull(chassis.BrainWhitelist, args.Used))
-        {
-            return;
-        }
-
-        if (TryComp<WiresPanelComponent>(ent, out var panel) && !panel.Open)
-        {
-            _popup.PopupEntity(Loc.GetString("borg-panel-not-open"), ent, args.User);
-            return;
-        }
-
-        if (TryComp<ActorComponent>(args.Used, out var actor) &&
-            !_borg.CanPlayerBeBorged(actor.PlayerSession))
-        {
-            _popup.PopupEntity(Loc.GetString("borg-player-not-allowed"), args.Used, args.User);
-            return;
-        }
-
-        if (!_container.Insert(args.Used, chassis.BrainContainer))
+        if (!IsOrganicBrain(args.Brain))
             return;
 
-        _adminLog.Add(LogType.Action,
-            LogImpact.Medium,
-            $"{args.User} installed brain {args.Used} into RoboCop {ent.Owner}");
-        args.Handled = true;
-    }
-
-    protected override void OnEntInserted(Entity<RobocopChassisComponent> ent, ref EntInsertedIntoContainerMessage args)
-    {
-        base.OnEntInserted(ent, ref args);
-
-        if (!TryComp<BorgChassisComponent>(ent, out var chassis) ||
-            args.Container != chassis.BrainContainer ||
-            !HasComp<BrainComponent>(args.Entity) ||
-            HasComp<BorgBrainComponent>(args.Entity))
-        {
-            return;
-        }
-
-        if (_mind.TryGetMind(args.Entity, out var mindId, out var mind))
+        if (_mind.TryGetMind(args.Brain, out var mindId, out var mind))
             _mind.TransferTo(mindId, ent.Owner, mind: mind);
     }
 
-    protected override void OnEntRemoved(Entity<RobocopChassisComponent> ent, ref EntRemovedFromContainerMessage args)
+    /// <inheritdoc cref="OnBrainInserted"/>
+    private void OnBrainRemoved(Entity<RobocopChassisComponent> ent, ref BrainRemovedFromBorgEvent args)
     {
-        base.OnEntRemoved(ent, ref args);
-
-        if (!TryComp<BorgChassisComponent>(ent, out var chassis) ||
-            args.Container != chassis.BrainContainer ||
-            !HasComp<BrainComponent>(args.Entity) ||
-            HasComp<BorgBrainComponent>(args.Entity))
-        {
+        if (!IsOrganicBrain(args.Brain) || TerminatingOrDeleted(args.Brain))
             return;
-        }
 
         if (_mind.TryGetMind(ent.Owner, out var mindId, out var mind))
-            _mind.TransferTo(mindId, args.Entity, mind: mind);
+            _mind.TransferTo(mindId, args.Brain, mind: mind);
+    }
+
+    private bool IsOrganicBrain(EntityUid brain)
+    {
+        return HasComp<BrainComponent>(brain) && !HasComp<BorgBrainComponent>(brain);
     }
 }

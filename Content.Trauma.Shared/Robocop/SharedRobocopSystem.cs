@@ -34,8 +34,8 @@ public abstract partial class SharedRobocopSystem : EntitySystem
         SubscribeLocalEvent<RobocopChassisComponent, ComponentRemove>(OnRemove);
         SubscribeLocalEvent<RobocopChassisComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<RobocopChassisComponent, BorgCanActivateEvent>(OnCanActivate);
-        SubscribeLocalEvent<RobocopChassisComponent, EntInsertedIntoContainerMessage>(OnEntInserted);
-        SubscribeLocalEvent<RobocopChassisComponent, EntRemovedFromContainerMessage>(OnEntRemoved);
+        SubscribeLocalEvent<RobocopChassisComponent, EntInsertedIntoContainerMessage>(OnLungsInserted);
+        SubscribeLocalEvent<RobocopChassisComponent, EntRemovedFromContainerMessage>(OnLungsRemoved);
         SubscribeLocalEvent<RobocopChassisComponent, MoveInputEvent>(OnMoveInput);
         SubscribeLocalEvent<RobocopChassisComponent, StandAttemptEvent>(OnStandAttempt);
         SubscribeLocalEvent<RobocopChassisComponent, UpdateCanMoveEvent>(OnCanMove);
@@ -62,16 +62,22 @@ public abstract partial class SharedRobocopSystem : EntitySystem
             args.Cancelled = true;
     }
 
-    protected virtual void OnEntInserted(Entity<RobocopChassisComponent> ent, ref EntInsertedIntoContainerMessage args)
+    private void OnLungsInserted(Entity<RobocopChassisComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
+        if (_timing.ApplyingState)
+            return; // The changes are already networked with the same game state.
+
         if (args.Container.ID != ent.Comp.LungSlotId)
             return;
 
         UpdateLungState(ent, false);
     }
 
-    protected virtual void OnEntRemoved(Entity<RobocopChassisComponent> ent, ref EntRemovedFromContainerMessage args)
+    private void OnLungsRemoved(Entity<RobocopChassisComponent> ent, ref EntRemovedFromContainerMessage args)
     {
+        if (_timing.ApplyingState)
+            return; // The changes are already networked with the same game state.
+
         if (args.Container.ID != ent.Comp.LungSlotId)
             return;
 

@@ -147,11 +147,13 @@ public sealed partial class BorgChassisComponent : Component
     [DataField]
     public bool CanOpenSelfUi;
 
+    // <Trauma>
     /// <summary>
     /// Whether installed modules are ejected when the chassis is gibbed.
     /// </summary>
     [DataField]
     public bool EjectModulesOnGib = true;
+    // </Trauma>
 }
 
 [Serializable, NetSerializable]

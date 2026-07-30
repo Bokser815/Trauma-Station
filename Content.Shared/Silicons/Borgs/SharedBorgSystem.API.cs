@@ -27,10 +27,12 @@ public abstract partial class SharedBorgSystem
         if (_mobState.IsIncapacitated(chassis.Owner))
             return false;
 
+        // <Trauma> - Let content veto activation, e.g. a RoboCop chassis without lungs.
         var ev = new BorgCanActivateEvent();
         RaiseLocalEvent(chassis.Owner, ref ev);
 
         return !ev.Cancelled;
+        // </Trauma>
     }
 
     /// <summary>
@@ -327,8 +329,13 @@ public abstract partial class SharedBorgSystem
     }
 }
 
+// <Trauma>
 /// <summary>
 /// Raised before a borg chassis is activated.
 /// </summary>
+/// <remarks>
+/// Lives here rather than in Content.Trauma.Common because Content.Shared cannot reference it.
+/// </remarks>
 [ByRefEvent]
 public record struct BorgCanActivateEvent(bool Cancelled = false);
+// </Trauma>

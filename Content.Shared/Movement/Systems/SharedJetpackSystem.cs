@@ -158,8 +158,8 @@ public abstract partial class SharedJetpackSystem : EntitySystem
             return;
         }
 
-        // An intrinsic jetpack uses its owner as the user.
-        SetEnabled(uid, component, !IsEnabled(uid), uid == args.Performer ? args.Performer : null);
+        // Trauma - added the user arg, an intrinsic jetpack is the mob itself so it is its own user.
+        SetEnabled(uid, component, !IsEnabled(uid), uid == args.Performer ? uid : null);
     }
 
     private bool CanEnableOnGrid(EntityUid? gridUid)

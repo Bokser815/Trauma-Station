@@ -13,6 +13,7 @@ using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Popups;
 using Content.Shared.Stunnable;
+using Content.Shared.Timing;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Serialization;
@@ -25,8 +26,8 @@ public sealed partial class ReusableCuffsSystem : EntitySystem
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedCuffableSystem _cuffs = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private SharedInteractionSystem _interaction = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private UseDelaySystem _useDelay = default!;
 
     public override void Initialize()
     {
@@ -41,7 +42,11 @@ public sealed partial class ReusableCuffsSystem : EntitySystem
         if (args.Handled || args.Target is not { Valid: true } target)
             return;
 
-        if (!args.CanReach || !CanCuff(args.User, target))
+        if (!args.CanReach || !CanCuff(target))
+            return;
+
+        // The applicator fabricates a fresh set every use, so the UseDelay is the only thing rate limiting it.
+        if (TryComp<UseDelayComponent>(ent, out var useDelay) && _useDelay.IsDelayed((ent.Owner, useDelay)))
             return;
 
         var cuffTime = ent.Comp.CuffTime;
@@ -86,7 +91,7 @@ public sealed partial class ReusableCuffsSystem : EntitySystem
             return;
 
         var user = args.Args.User;
-        if (!CanCuff(user, target))
+        if (!CanCuff(target))
             return;
 
         var handcuffs = PredictedSpawnAtPosition(ent.Comp.HandcuffPrototype, ent.Owner.ToCoordinates());
@@ -96,6 +101,7 @@ public sealed partial class ReusableCuffsSystem : EntitySystem
             return;
         }
 
+        _useDelay.TryResetDelay(ent.Owner);
         _audio.PlayPredicted(ent.Comp.EndCuffSound, ent.Owner, user);
 
         var popup = user == target
@@ -136,11 +142,11 @@ public sealed partial class ReusableCuffsSystem : EntitySystem
             $"{ToPrettyString(user):player} has cuffed {ToPrettyString(target):player}");
     }
 
-    private bool CanCuff(EntityUid user, EntityUid target)
+    /// <summary>
+    /// Cheap pre-check only; <see cref="SharedCuffableSystem.TryAddNewCuffs"/> is the authority and re-checks range.
+    /// </summary>
+    private bool CanCuff(EntityUid target)
     {
-        if (!_interaction.InRangeUnobstructed(user, target))
-            return false;
-
         if (!TryComp<CuffableComponent>(target, out var cuffable) ||
             !TryComp<HandsComponent>(target, out var hands))
         {

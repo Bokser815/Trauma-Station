@@ -1,4 +1,5 @@
 // <Trauma>
+using Content.Shared.Body.Components;
 using Content.Shared.StationAi;
 using Content.Trauma.Common.Silicons.Borgs;
 // </Trauma>
@@ -236,16 +237,21 @@ public abstract partial class SharedBorgSystem : EntitySystem
         TryComp<BorgBrainComponent>(used, out var brain);
         TryComp<BorgModuleComponent>(used, out var module);
 
+        // <Trauma>
+        // Chassis that accept an organic brain (RoboCop) opt in through their BrainWhitelist, which is checked below.
+        var isBrain = brain != null || HasComp<BrainComponent>(used);
+        // </Trauma>
+
         if (TryComp<WiresPanelComponent>(chassis, out var panel) && !panel.Open)
         {
-            if (brain != null || module != null)
+            if (isBrain || module != null) // Trauma - was brain != null
             {
                 _popup.PopupEntity(Loc.GetString("borg-panel-not-open"), chassis, args.User);
             }
             return;
         }
 
-        if (chassis.Comp.BrainEntity == null && brain != null &&
+        if (chassis.Comp.BrainEntity == null && isBrain && // Trauma - was brain != null
             _whitelist.IsWhitelistPassOrNull(chassis.Comp.BrainWhitelist, used))
         {
             if (TryComp<ActorComponent>(used, out var actor) && !CanPlayerBeBorged(actor.PlayerSession))
@@ -323,8 +329,10 @@ public abstract partial class SharedBorgSystem : EntitySystem
 
         args.Giblets.UnionWith(_container.EmptyContainer(chassis.Comp.BrainContainer));
 
+        // <Trauma> - Chassis with fixed modules keep them instead of scattering them on gib.
         if (chassis.Comp.EjectModulesOnGib)
             args.Giblets.UnionWith(_container.EmptyContainer(chassis.Comp.ModuleContainer));
+        // </Trauma>
     }
 
     private void OnGetDeadIC(Entity<BorgChassisComponent> chassis, ref GetCharactedDeadIcEvent args)
